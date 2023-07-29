@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator typegraphql {
+  provider = "typegraphql-prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model department {
+  department_id Int        @id @default(autoincrement())
+  Name          String     @default("") @db.Char(35)
+  Details       String     @default("") @db.Char(200)
+  employee      employee[]
+}
+
+model employee {
+  employee_id   Int        @id @default(autoincrement())
+  Name          String     @default("") @db.Char(35)
+  department_id Int
+  Salary        Int        @default(0)
+  department    department @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "department_id_ibfk_1")
+
+  @@index([department_id], map: "department_id")
+}
